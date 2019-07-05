@@ -29,8 +29,8 @@
 
 Queue* WCDBInodeGetWaitQueue(unixInodeInfo* pInode);
 sqlite3_condition* WCDBInodeGetCond(unixInodeInfo* pInode);
-unsigned char WCDBInodeGetShared(unixInodeInfo* pInode);
-int WCDBInodeGetFileLock(unixInodeInfo* pInode);
+int WCDBInodeGetShared(unixInodeInfo* pInode);
+unsigned char WCDBInodeGetFileLock(unixInodeInfo* pInode);
 
 Queue* WCDBShmNodeGetWaitQueue(unixShmNode* pShmNode);
 sqlite3_condition* WCDBShmNodeGetCond(unixShmNode* pShmNode);

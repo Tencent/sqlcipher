@@ -95,6 +95,9 @@ if {$addstatic} {
 foreach hdr {
    crypto.h
    sqlcipher.h
+   mutex_wcdb.h
+   os_wcdb.h
+   queue.h
    btree.h
    btreeInt.h
    fts3.h
@@ -293,6 +296,10 @@ foreach file {
    crypto_openssl.c
    crypto_cc.c
    crypto_custom.c
+
+   mutex_wcdb.c
+   os_wcdb.c
+   queue.c
 
    global.c
    ctime.c

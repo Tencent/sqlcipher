@@ -159,6 +159,23 @@ CRYPTOSRC = \
 
 # END CRYPTO
 
+# BEGIN WCDB
+
+WCDBLIBOBJ = \
+  mutex_wcdb.lo \
+  os_wcdb.lo \
+  queue.lo
+  
+WCDBSRC = \
+  $(TOP)/src/mutex_wcdb.h \
+  $(TOP)/src/mutex_wcdb.c \
+  $(TOP)/src/os_wcdb.h \
+  $(TOP)/src/os_wcdb.c \
+  $(TOP)/src/queue.h \
+  $(TOP)/src/queue.c
+
+# END WCDB
+
 # The directory into which to store package information for
 
 # Some standard variables and programs
@@ -207,7 +224,7 @@ LIBOBJS0 = alter.lo analyze.lo attach.lo auth.lo \
          update.lo util.lo vacuum.lo \
          vdbe.lo vdbeapi.lo vdbeaux.lo vdbeblob.lo vdbemem.lo vdbesort.lo \
          vdbetrace.lo wal.lo walker.lo where.lo wherecode.lo whereexpr.lo \
-         utf.lo vtab.lo $(CRYPTOLIBOBJ)
+         utf.lo vtab.lo $(CRYPTOLIBOBJ) $(WCDBLIBOBJ)
 
 # Object files for the amalgamation.
 #
@@ -222,6 +239,7 @@ LIBOBJ = $(LIBOBJS$(USE_AMALGAMATION))
 #
 SRC = \
   $(CRYPTOSRC) \
+  $(WCDBSRC) \
   $(TOP)/src/alter.c \
   $(TOP)/src/analyze.c \
   $(TOP)/src/attach.c \
@@ -729,9 +747,18 @@ crypto_libtomcrypt.lo:	$(TOP)/src/crypto_libtomcrypt.c $(HDR)
 	$(LTCOMPILE) -c $(TOP)/src/crypto_libtomcrypt.c
 crypto_cc.lo:	$(TOP)/src/crypto_cc.c $(HDR)
 	$(LTCOMPILE) -c $(TOP)/src/crypto_cc.c
-crypto_custom.lo: $(TOP)/src/crypto_crypto.c $(HDR)
-	$(LTCOMPILE) -c $(TOP)/src/crypto_crypto.c
+crypto_custom.lo: $(TOP)/src/crypto_custom.c $(HDR)
+	$(LTCOMPILE) -c $(TOP)/src/crypto_custom.c
 # END CRYPTO
+
+# BEGIN WCDB
+mutex_wcdb.lo:	$(TOP)/src/mutex_wcdb.c $(HDR)
+	$(LTCOMPILE) -c $(TOP)/src/mutex_wcdb.c
+os_wcdb.lo:	$(TOP)/src/os_wcdb.c $(HDR)
+	$(LTCOMPILE) -c $(TOP)/src/os_wcdb.c
+queue.lo:	$(TOP)/src/queue.c $(HDR)
+	$(LTCOMPILE) -c $(TOP)/src/queue.c
+# END WCDB
 
 # Rules to build individual *.o files from files in the src directory.
 #
