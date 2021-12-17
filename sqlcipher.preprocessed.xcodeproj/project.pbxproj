@@ -708,6 +708,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 39FFA7ED22366BD600735F05 /* Debug.xcconfig */;
 			buildSettings = {
+				TARGETED_DEVICE_FAMILY = "1,2,4,6";
 			};
 			name = Debug;
 		};
@@ -715,6 +716,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 39FFA7EC22366BD600735F05 /* Release.xcconfig */;
 			buildSettings = {
+				TARGETED_DEVICE_FAMILY = "1,2,4,6";
 			};
 			name = Release;
 		};
