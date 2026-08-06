@@ -211,7 +211,19 @@ int sqlite3RunVacuum(
   ** to write the journal header file.
   */
   nDb = db->nDb;
-  rc = execSqlF(db, pzErrMsg, "ATTACH %Q AS vacuum_db", zOut);
+  {
+    /* The vacuum destination must always be writable. Do not let vacuum_db
+    ** inherit SQLITE_OPEN_MAINDB_READONLY from the source connection:
+    ** unixOpen strips write access for that flag while keeping O_CREAT, so
+    ** the destination would be created with an O_RDONLY fd and the first
+    ** write lock on it would fail with EBADF -> SQLITE_IOERR_LOCK
+    ** ("disk I/O error"). This makes VACUUM INTO fail on any database that
+    ** is already in WAL mode when the connection opens. */
+    unsigned int savedOpenFlags = db->openFlags;
+    db->openFlags &= ~SQLITE_OPEN_MAINDB_READONLY;
+    rc = execSqlF(db, pzErrMsg, "ATTACH %Q AS vacuum_db", zOut);
+    db->openFlags = savedOpenFlags;
+  }
   if( rc!=SQLITE_OK ) goto end_of_vacuum;
   assert( (db->nDb-1)==nDb );
   pDb = &db->aDb[nDb];
