@@ -1078,7 +1078,7 @@ static int sqlcipher_execExecSql(sqlite3 *db, char **pzErrMsg, const char *zSql)
 void sqlcipher_exportFunc(sqlite3_context *context, int argc, sqlite3_value **argv) {
   sqlite3 *db = sqlite3_context_db_handle(context);
   const char* targetDb, *sourceDb; 
-  int targetDb_idx = 0;
+  int targetDb_idx = 0, sourceDb_idx = 0;
   u64 saved_flags = db->flags;        /* Saved value of the db->flags */
   u32 saved_mDbFlags = db->mDbFlags;        /* Saved value of the db->mDbFlags */
   int saved_nChange = db->nChange;      /* Saved value of db->nChange */
@@ -1098,12 +1098,20 @@ void sqlcipher_exportFunc(sqlite3_context *context, int argc, sqlite3_value **ar
   targetDb = (const char*) sqlite3_value_text(argv[0]);
   sourceDb = (argc == 2) ? (char *) sqlite3_value_text(argv[1]) : "main";
 
+  /* if the source database is not valid, do not proceed. */
+  sourceDb_idx =  sqlcipher_find_db_index(db, sourceDb);
+  if(sourceDb_idx == 0 && sqlite3StrICmp("main", sourceDb) != 0) {
+    rc = SQLITE_ERROR;
+    pzErrMsg = sqlite3_mprintf("invalid source database %s", sourceDb);
+    goto end_of_export;
+  }
+
   /* if the name of the target is not main, but the index returned is zero 
      there is a mismatch and we should not proceed */
   targetDb_idx =  sqlcipher_find_db_index(db, targetDb);
   if(targetDb_idx == 0 && sqlite3StrICmp("main", targetDb) != 0) {
     rc = SQLITE_ERROR;
-    pzErrMsg = sqlite3_mprintf("unknown database %s", targetDb);
+    pzErrMsg = sqlite3_mprintf("invalid target database %s", targetDb);
     goto end_of_export;
   }
   db->init.iDb = targetDb_idx;
